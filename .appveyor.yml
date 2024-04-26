@@ -119,6 +119,7 @@ for:
 
             # patch pubspecs
             python3 ci/patch_pubspec.py packages/flet/pubspec.yaml $PKG_VER
+            python3 ci/patch_pubspec.py packages/flet_animated_text_kit/pubspec.yaml $PKG_VER
             python3 ci/patch_pubspec.py packages/flet_audio/pubspec.yaml $PKG_VER
             python3 ci/patch_pubspec.py packages/flet_audio_recorder/pubspec.yaml $PKG_VER
             python3 ci/patch_pubspec.py packages/flet_lottie/pubspec.yaml $PKG_VER
@@ -132,6 +133,10 @@ for:
             cd $APPVEYOR_BUILD_FOLDER
 
             cd packages/flet_audio
+            dart pub publish --force || exit 1
+            cd $APPVEYOR_BUILD_FOLDER
+
+            cd packages/flet_animated_text_kit
             dart pub publish --force || exit 1
             cd $APPVEYOR_BUILD_FOLDER
 
@@ -159,6 +164,10 @@ for:
 
             cd packages/flet
             flutter test
+            dart pub publish --dry-run
+            cd $APPVEYOR_BUILD_FOLDER
+
+            cd packages/flet_animated_text_kit
             dart pub publish --dry-run
             cd $APPVEYOR_BUILD_FOLDER
 

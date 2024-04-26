@@ -20,6 +20,7 @@ from flet_core.alert_dialog import AlertDialog
 from flet_core.alignment import Alignment
 from flet_core.animated_switcher import AnimatedSwitcher, AnimatedSwitcherTransition
 from flet_core.animation import Animation, AnimationCurve
+from flet_core.animated_text_kit import AnimatedTextKit
 from flet_core.app_bar import AppBar
 from flet_core.audio import Audio
 from flet_core.audio_recorder import AudioEncoder, AudioRecorder
@@ -103,7 +104,12 @@ from flet_core.datatable import (
     DataRow,
     DataTable,
 )
-from flet_core.date_picker import DatePicker, DatePickerEntryMode, DatePickerMode, DatePickerEntryModeChangeEvent
+from flet_core.date_picker import (
+    DatePicker,
+    DatePickerEntryMode,
+    DatePickerMode,
+    DatePickerEntryModeChangeEvent,
+)
 from flet_core.dismissible import (
     Dismissible,
     DismissibleDismissEvent,
@@ -282,7 +288,11 @@ from flet_core.theme import (
     TimePickerTheme,
     TooltipTheme,
 )
-from flet_core.time_picker import TimePicker, TimePickerEntryMode, TimePickerEntryModeChangeEvent
+from flet_core.time_picker import (
+    TimePicker,
+    TimePickerEntryMode,
+    TimePickerEntryModeChangeEvent,
+)
 from flet_core.tooltip import Tooltip
 from flet_core.transform import Offset, Rotate, Scale
 from flet_core.transparent_pointer import TransparentPointer

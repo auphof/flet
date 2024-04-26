@@ -1,0 +1,24 @@
+name: flet_animated_text_kit
+description: Flet Animated Text Kit control
+homepage: https://flet.dev
+repository: https://github.com/flet-dev/flet/packages/flet_animated_text_kit
+version: 0.22.1
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  collection: ^1.16.0
+  animated_text_kit: ^4.2.2
+
+  flet:
+    path: ../flet/
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0

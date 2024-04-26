@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flet/flet.dart';
 import 'package:flet_audio/flet_audio.dart' as flet_audio;
+import 'package:flet_animated_text_kit/flet_animated_text_kit.dart'
+    as flet_animated_text_kit;
 import 'package:flet_audio_recorder/flet_audio_recorder.dart'
     as flet_audio_recorder;
 import 'package:flet_lottie/flet_lottie.dart' as flet_lottie;
@@ -23,6 +25,7 @@ void main([List<String>? args]) async {
   await setupDesktop();
 
   WidgetsFlutterBinding.ensureInitialized();
+  flet_animated_text_kit.ensureInitialized();
   flet_audio.ensureInitialized();
   flet_audio_recorder.ensureInitialized();
   flet_lottie.ensureInitialized();
@@ -86,6 +89,7 @@ void main([List<String>? args]) async {
     assetsDir: assetsDir,
     errorsHandler: errorsHandler,
     createControlFactories: [
+      flet_animated_text_kit.createControl,
       flet_audio.createControl,
       flet_audio_recorder.createControl,
       flet_lottie.createControl,
