@@ -44,9 +44,17 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
     //       "AnimatedTextKit must have \"text\"  specified.");
     // }
 
-    var repeat = widget.control.attrBool("repeat", true);
+    var repeatForever = widget.control.attrBool("repeat_forever", true) ?? true;
     var speed = widget.control.attrInt("speed", 250) ?? 250;
     var pause = widget.control.attrInt("pause", 1000) ?? 1000;
+
+    var displayFullTextOnTap =
+        widget.control.attrBool("display_full_text_on_tap", false) ?? false;
+    var stopPauseOnTap =
+        widget.control.attrBool("stop_pause_on_tap", false) ?? false;
+    var isRepeatingAnimation =
+        widget.control.attrBool("is_repeating_animation", true) ?? true;
+    var totalRepeatCount = widget.control.attrInt("total_repeat_count", 0) ?? 0;
     // var backgroundLoading = widget.control.attrBool("backgroundLoading");
     // var reverse = widget.control.attrBool("reverse");
     // var animate = widget.control.attrBool("animate");
@@ -75,10 +83,12 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
             speed: Duration(milliseconds: speed),
           ),
         ],
-        totalRepeatCount: 4,
+        isRepeatingAnimation: isRepeatingAnimation,
+        repeatForever: repeatForever,
+        totalRepeatCount: totalRepeatCount,
         pause: Duration(milliseconds: pause),
-        displayFullTextOnTap: true,
-        stopPauseOnTap: true,
+        displayFullTextOnTap: displayFullTextOnTap,
+        stopPauseOnTap: stopPauseOnTap,
       );
       // TODO: fix this
       // if (text == "") {
