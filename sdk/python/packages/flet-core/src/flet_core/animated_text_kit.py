@@ -25,7 +25,8 @@ class AnimatedTextKit(ConstrainedControl):
 
     def __init__(
         self,
-        text: Optional[str] = None,
+        text: str = None,
+        speed: OptionalNumber = None,
         repeat: Optional[bool] = None,
         reverse: Optional[bool] = None,
         animate: Optional[bool] = None,
@@ -98,6 +99,7 @@ class AnimatedTextKit(ConstrainedControl):
         )
 
         self.text = text
+        self.speed = speed
         self.repeat = repeat
         self.reverse = reverse
         self.animate = animate
@@ -127,6 +129,15 @@ class AnimatedTextKit(ConstrainedControl):
     # def src_base64(self, value):
     #     self._set_attr("srcBase64", value)
 
+    # text
+    @property
+    def text(self):
+        return self._get_attr("text", def_value="", data_type="str")
+
+    @text.setter
+    def text(self, value):
+        self._set_attr("text", value)
+
     # repeat
     @property
     def repeat(self):
@@ -135,6 +146,15 @@ class AnimatedTextKit(ConstrainedControl):
     @repeat.setter
     def repeat(self, value):
         self._set_attr("repeat", value)
+
+    # speed
+    @property
+    def speed(self):
+        return self._get_attr("speed", def_value=250, data_type="int")
+
+    @speed.setter
+    def speed(self, value):
+        self._set_attr("speed", value)
 
     # # animate
     # @property

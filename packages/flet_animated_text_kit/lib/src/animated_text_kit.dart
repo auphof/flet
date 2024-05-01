@@ -31,8 +31,13 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
 
     // var src = widget.control.attrString("src", "")!;
     // var srcBase64 = widget.control.attrString("srcBase64", "")!;
+
+    debugPrint("AnimatedTextKit attrString: ${widget.control} ");
+
     var text = widget.control.attrString("text",
         "text appears to be blank,  so I will just say... Hello world!")!;
+
+    debugPrint("AnimatedTextKit text: ${text} ");
 
     // if (text == "") {
     //   return const ErrorControl(
@@ -40,6 +45,8 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
     // }
 
     var repeat = widget.control.attrBool("repeat", true);
+    var speed = widget.control.attrInt("speed", 250) ?? 250;
+    var pause = widget.control.attrInt("pause", 1000) ?? 1000;
     // var backgroundLoading = widget.control.attrBool("backgroundLoading");
     // var reverse = widget.control.attrBool("reverse");
     // var animate = widget.control.attrBool("animate");
@@ -65,11 +72,11 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
               fontSize: 32.0,
               fontWeight: FontWeight.bold,
             ),
-            speed: const Duration(milliseconds: 500),
+            speed: Duration(milliseconds: speed),
           ),
         ],
         totalRepeatCount: 4,
-        pause: const Duration(milliseconds: 1000),
+        pause: Duration(milliseconds: pause),
         displayFullTextOnTap: true,
         stopPauseOnTap: true,
       );
