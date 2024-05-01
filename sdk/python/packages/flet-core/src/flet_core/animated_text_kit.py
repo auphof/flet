@@ -56,6 +56,10 @@ class AnimatedTextKit(ConstrainedControl):
         filter_quality: Optional[FilterQuality] = None,
         fit: Optional[ImageFit] = None,
         on_error=None,
+        on_tap=None,
+        on_finished=None,
+        on_next=None,
+        on_next_before_pause=None,
         #
         # ConstrainedControl
         #
@@ -156,6 +160,10 @@ class AnimatedTextKit(ConstrainedControl):
         self.fit = fit
         self.background_loading = background_loading
         self.on_error = on_error
+        self.on_tap = on_tap
+        self.on_finished = on_finished
+        self.on_next = on_next
+        self.on_next_before_pause = on_next_before_pause
 
     def _get_control_name(self):
         return "animated_text_kit"
@@ -271,6 +279,70 @@ class AnimatedTextKit(ConstrainedControl):
     def total_repeat_count(self, value):
         """Sets the number of times the animation should repeat when not set to repeat forever."""
         self._set_attr("total_repeat_count", value)
+
+    # on_tap
+    @property
+    def on_tap(self):
+        return self._get_event_handler("on_tap")
+
+    @on_tap.setter
+    def on_tap(self, handler):
+        self._add_event_handler("on_tap", handler)
+        self._set_attr("onTap", True if handler is not None else None)
+
+    # on_finished
+    @property
+    def on_finished(self):
+        """
+        Gets the event handler for the 'finished' event.
+        This event is triggered when the text animation sequence has completed.
+        """
+        return self._get_event_handler("on_finished")
+
+    @on_finished.setter
+    def on_finished(self, handler):
+        """
+        Sets the event handler for the 'finished' event.
+        Registers a function to be called when the text animation sequence completes.
+        """
+        self._add_event_handler("on_finished", handler)
+        self._set_attr("onFinished", True if handler is not None else None)
+
+    # on_next
+    @property
+    def on_next(self):
+        """
+        Gets the event handler for the 'next' event.
+        This event is triggered when moving to the next text in the sequence.
+        """
+        return self._get_event_handler("on_next")
+
+    @on_next.setter
+    def on_next(self, handler):
+        """
+        Sets the event handler for the 'next' event.
+        Registers a function to be called when transitioning to the next text in the animation.
+        """
+        self._add_event_handler("on_next", handler)
+        self._set_attr("onNext", True if handler is not None else None)
+
+    # on_next_before_pause
+    @property
+    def on_next_before_pause(self):
+        """
+        Gets the event handler for the 'next_before_pause' event.
+        This event is triggered just before a pause is initiated after a text has been displayed.
+        """
+        return self._get_event_handler("on_next_before_pause")
+
+    @on_next_before_pause.setter
+    def on_next_before_pause(self, handler):
+        """
+        Sets the event handler for the 'next_before_pause' event.
+        Registers a function to be called right before a pause is initiated in the animation cycle.
+        """
+        self._add_event_handler("on_next_before_pause", handler)
+        self._set_attr("onNextBeforePause", True if handler is not None else None)
 
     # # animate
     # @property

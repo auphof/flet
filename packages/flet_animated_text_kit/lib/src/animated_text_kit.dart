@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flet/flet.dart';
@@ -74,7 +75,6 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
       animatedTextKit = AnimatedTextKit(
         animatedTexts: [
           TypewriterAnimatedText(
-            // 'Hello world!',
             text,
             textStyle: const TextStyle(
               fontSize: 32.0,
@@ -89,6 +89,23 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         pause: Duration(milliseconds: pause),
         displayFullTextOnTap: displayFullTextOnTap,
         stopPauseOnTap: stopPauseOnTap,
+        onTap: () {
+          debugPrint("AnimatedTextKit ${widget.control.id} onTap!");
+          widget.backend.triggerControlEvent(widget.control.id, "on_tap");
+        },
+        onFinished: () {
+          debugPrint("AnimatedTextKit ${widget.control.id} onFinished!");
+          widget.backend.triggerControlEvent(widget.control.id, "on_finished");
+        },
+        onNext: (int, bool) {
+          debugPrint("AnimatedTextKit ${widget.control.id} onNext!");
+          widget.backend.triggerControlEvent(widget.control.id, "on_next");
+        },
+        onNextBeforePause: (int, bool) {
+          debugPrint("AnimatedTextKit ${widget.control.id} onNextBeforePause!");
+          widget.backend
+              .triggerControlEvent(widget.control.id, "on_next_before_pause");
+        },
       );
       // TODO: fix this
       // if (text == "") {
