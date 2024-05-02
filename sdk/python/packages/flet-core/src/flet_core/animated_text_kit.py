@@ -3,6 +3,7 @@ from typing import Any, Optional, Union
 from flet_core.constrained_control import ConstrainedControl
 from flet_core.control import OptionalNumber
 from flet_core.ref import Ref
+from flet_core.text_style import TextStyle
 from flet_core.types import (
     AnimationValue,
     OffsetValue,
@@ -51,7 +52,10 @@ class AnimatedTextKit(ConstrainedControl):
         is_repeating_animation: Optional[bool] = None,
         total_repeat_count: Optional[int] = None,
         reverse: Optional[bool] = None,
+        text_size: OptionalNumber = None,
+        text_style: Optional[TextStyle] = None,
         animate: Optional[bool] = None,
+        # TODO: check what can be removed
         background_loading: Optional[bool] = None,
         filter_quality: Optional[FilterQuality] = None,
         fit: Optional[ImageFit] = None,
@@ -145,6 +149,8 @@ class AnimatedTextKit(ConstrainedControl):
         )
 
         self.text = text
+        self.text_size = text_size
+        self.text_style = text_style
         self.speed = speed
         self.repeat_forever = repeat_forever
         self.pause = (

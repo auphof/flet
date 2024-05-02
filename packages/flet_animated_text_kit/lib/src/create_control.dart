@@ -8,6 +8,9 @@ CreateControlFactory createControl = (CreateControlArgs args) {
       return AnimatedTextKitControl(
           parent: args.parent,
           control: args.control,
+          children: args.children,
+          parentDisabled: args.parentDisabled,
+          parentAdaptive: args.parentAdaptive,
           nextChild: args.nextChild,
           backend: args.backend);
     default:
