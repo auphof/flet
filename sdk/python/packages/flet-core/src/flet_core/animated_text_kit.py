@@ -15,9 +15,134 @@ from flet_core.types import (
 from flet_core.video import FilterQuality
 
 
+flutter_control_properties = {
+    "text": {
+        "default": "",
+        "type": "str",
+        "get_doc": "Returns the current text of the control.",
+        "set_doc": "Sets the text displayed by the control.",
+    },
+    "text_size": {
+        "default": None,
+        "type": "OptionalNumber",
+        "get_doc": "Returns the size of the text.",
+        "set_doc": "Sets the size of the text displayed.",
+    },
+    # following `text_style` manually is implemented in the class as it requires json conversion
+    # TODO TD extend generator to handle structures like text_style properties
+    # "text_style": {"default": None, "type": "Optional[TextStyle]"},
+    "speed": {
+        "default": 250,
+        "type": "int",
+        "get_doc": "Returns the size of the text.",
+        "set_doc": "Sets the size of the text displayed.",
+    },
+    "pause": {
+        "default": 1000,
+        "type": "int",
+        "get_doc": "Gets the current speed of the text animation.",
+        "set_doc": "Sets the speed of the text animation in milliseconds.",
+    },
+    "total_repeat_count": {"default": 4, "type": "int"},
+    "repeat_forever": {
+        "default": True,
+        "type": "bool",
+        "get_doc": "Checks if the animation repeats indefinitely.",
+        "set_doc": "Enables or disables indefinite repetition of the animation.",
+    },
+    "is_repeating_animation": {"default": True, "type": "bool"},
+    "stop_pause_on_tap": {"default": False, "type": "bool"},
+    "display_full_text_on_tap": {"default": False, "type": "bool"},
+    # Additional properties can be defined here
+}
+
+# Define event metadata similar to property metadata
+flutter_control_events = {
+    "on_tap": {
+        "default": None,
+        "get_doc": "Returns the event handler attached to 'tap' events.",
+        "set_doc": "Sets the event handler for 'tap' events. Activates the control to respond to tap interactions.",
+    },
+    "on_finished": {
+        "default": None,
+        "get_doc": "Gets the event handler for the 'finished' event when the animation sequence completes.",
+        "set_doc": "Sets the event handler that is called when the animation sequence completes.",
+    },
+    "on_next": {
+        "default": None,
+        "get_doc": "Gets the event handler for the 'next' event when moving to the next text.",
+        "set_doc": "Sets the event handler that is triggered when moving to the next text in the animation.",
+    },
+    "on_next_before_pause": {
+        "default": None,
+        "get_doc": "Gets the event handler for the 'next_before_pause' event, triggered just before a pause.",
+        "set_doc": "Sets the event handler that is called right before a pause is initiated in the animation.",
+    },
+}
+
+
+def property_generator(properties, events):
+    def decorator(cls):
+        cls._flet_control_property_info = properties  # Store property metadata
+        cls._flet_control_event_info = events  # Store event handler metadata
+
+        # Generate properties with docstrings
+        for prop_name, prop_settings in properties.items():
+            prop_docstring = (
+                f"Gets or sets the {prop_name}. Default is {prop_settings['default']}."
+            )
+
+            def getter(
+                self,
+                prop_name=prop_name,
+                def_value=prop_settings["default"],
+                data_type=prop_settings["type"],
+            ):
+                """Generated getter for property."""
+                return self._get_attr(prop_name, def_value, data_type)
+
+            def setter(self, value, prop_name=prop_name):
+                """Generated setter for property."""
+                self._set_attr(prop_name, value)
+
+            prop = property(getter, setter)
+            prop.__doc__ = prop_docstring  # Set the docstring for the property
+            setattr(cls, prop_name, prop)
+
+        # Generate event handlers with docstrings
+        for event_name, default in events.items():
+            event_docstring = (
+                f"Event handler for when {event_name.replace('_', ' ')} occurs."
+            )
+
+            def event_getter(self, event_name=event_name):
+                """Generated getter for event handler."""
+                return self._get_event_handler(event_name)
+
+            def event_setter(self, handler, event_name=event_name):
+                """Generated setter for event handler."""
+                self._add_event_handler(event_name, handler)
+                self._set_attr(
+                    f"on{event_name.capitalize()}",
+                    True if handler is not None else None,
+                )
+
+            event_prop = property(event_getter, event_setter)
+            event_prop.__doc__ = (
+                event_docstring  # Set the docstring for the event property
+            )
+            setattr(cls, event_name, event_prop)
+
+        return cls
+
+    return decorator
+
+
+# Apply the property_generator with both properties and events
+@property_generator(flutter_control_properties, flutter_control_events)
 class AnimatedTextKit(ConstrainedControl):
     """
-    Displays lottie animations.
+    Displays AnimatedTextKit animations.
 
 
     Displays animated texts with various customizable properties including speed, repeat, and pause durations.
@@ -116,6 +241,7 @@ class AnimatedTextKit(ConstrainedControl):
             totalRepeatCount (Optional[int]): Number of times the animation should repeat.
 
         """
+
         ConstrainedControl.__init__(
             self,
             ref=ref,
@@ -147,7 +273,7 @@ class AnimatedTextKit(ConstrainedControl):
             data=data,
             rtl=rtl,
         )
-
+        # Control properties
         self.text = text
         self.text_size = text_size
         self.text_style = text_style
@@ -171,6 +297,10 @@ class AnimatedTextKit(ConstrainedControl):
         self.on_next = on_next
         self.on_next_before_pause = on_next_before_pause
 
+    def before_update(self):
+        super().before_update()
+        self._set_attr_json("textStyle", self.__text_style)
+
     def _get_control_name(self):
         return "animated_text_kit"
 
@@ -192,163 +322,189 @@ class AnimatedTextKit(ConstrainedControl):
     # def src_base64(self, value):
     #     self._set_attr("srcBase64", value)
 
-    # text
+    # # text
+    # @property
+    # def text(self):
+    #     return self._get_attr("text", def_value="", data_type="str")
+
+    # @text.setter
+    # def text(self, value):
+    #     self._set_attr("text", value)
+
+    # # text_size
+    # @property
+    # def text_size(self) -> OptionalNumber:
+    #     return self._get_attr("textSize")
+
+    # @text_size.setter
+    # def text_size(self, value: OptionalNumber):
+    #     self._set_attr("textSize", value)
+
+    # text_style
     @property
-    def text(self):
-        return self._get_attr("text", def_value="", data_type="str")
+    def text_style(self) -> Optional[TextStyle]:
+        return self.__text_style
 
-    @text.setter
-    def text(self, value):
-        self._set_attr("text", value)
+    @text_style.setter
+    def text_style(self, value: Optional[TextStyle]):
+        self.__text_style = value
 
-    # repeatForever
-    @property
-    def repeat_forever(self):
-        return self._get_attr("repeat_forever", def_value=True, data_type="bool")
+    # # @property
+    # # def text_style(self) -> Optional[TextStyle]:
+    # #     return self._get_attr("textStyle")
 
-    @repeat_forever.setter
-    def repeat_forever(self, value):
-        self._set_attr("repeat_forever", value)
+    # # @text_style.setter
+    # # def text_style(self, value: Optional[TextStyle]):
+    # #     self._set_attr("textStyle", value)
 
-    # speed
-    @property
-    def speed(self):
-        return self._get_attr("speed", def_value=250, data_type="int")
+    # # repeatForever
+    # @property
+    # def repeat_forever(self):
+    #     return self._get_attr("repeat_forever", def_value=True, data_type="bool")
 
-    @speed.setter
-    def speed(self, value):
-        self._set_attr("speed", value)
+    # @repeat_forever.setter
+    # def repeat_forever(self, value):
+    #     self._set_attr("repeat_forever", value)
 
-    # speed
-    @property
-    def pause(self):
-        """
-        Gets or sets the duration of the pause between texts in milliseconds.
-        By default, it is set to 1000 milliseconds unless specified.
-        """
-        return self._get_attr("pause", def_value=1000, data_type="int")
+    # # speed
+    # @property
+    # def speed(self):
+    #     return self._get_attr("speed", def_value=250, data_type="int")
 
-    @pause.setter
-    def pause(self, value):
-        """
-        Sets the duration of the pause between texts in milliseconds.
-        This controls how long the system waits before transitioning to the next text animation.
-        """
-        self._set_attr("pause", value)
+    # @speed.setter
+    # def speed(self, value):
+    #     self._set_attr("speed", value)
 
-    @property
-    def display_full_text_on_tap(self):
-        """Gets whether tapping the animation rushes it to completion."""
-        return self._get_attr(
-            "display_full_text_on_tap", def_value=False, data_type="bool"
-        )
+    # # speed
+    # @property
+    # def pause(self):
+    #     """
+    #     Gets or sets the duration of the pause between texts in milliseconds.
+    #     By default, it is set to 1000 milliseconds unless specified.
+    #     """
+    #     return self._get_attr("pause", def_value=1000, data_type="int")
 
-    @display_full_text_on_tap.setter
-    def display_full_text_on_tap(self, value):
-        """Sets whether tapping the animation should rush it to completion."""
-        self._set_attr("display_full_text_on_tap", value)
+    # @pause.setter
+    # def pause(self, value):
+    #     """
+    #     Sets the duration of the pause between texts in milliseconds.
+    #     This controls how long the system waits before transitioning to the next text animation.
+    #     """
+    #     self._set_attr("pause", value)
 
-    @property
-    def stop_pause_on_tap(self):
-        """
-        Gets whether tapping during a pause stops the pause and starts the next text animation.
-        If true, tapping during a pause will stop it and immediately start the next text animation.
-        """
-        return self._get_attr("stop_pause_on_tap", def_value=False, data_type="bool")
+    # @property
+    # def display_full_text_on_tap(self):
+    #     """Gets whether tapping the animation rushes it to completion."""
+    #     return self._get_attr(
+    #         "display_full_text_on_tap", def_value=False, data_type="bool"
+    #     )
 
-    @stop_pause_on_tap.setter
-    def stop_pause_on_tap(self, value):
-        """
-        Sets whether tapping during a pause should stop the pause and start the next text animation.
-        If true, a tap during a pause will stop the pause and trigger the start of the next text animation.
-        """
-        self._set_attr("stop_pause_on_tap", value)
+    # @display_full_text_on_tap.setter
+    # def display_full_text_on_tap(self, value):
+    #     """Sets whether tapping the animation should rush it to completion."""
+    #     self._set_attr("display_full_text_on_tap", value)
 
-    @property
-    def is_repeating_animation(self):
-        """Gets whether the animation is set to repeat."""
-        return self._get_attr(
-            "is_repeating_animation", def_value=True, data_type="bool"
-        )
+    # @property
+    # def stop_pause_on_tap(self):
+    #     """
+    #     Gets whether tapping during a pause stops the pause and starts the next text animation.
+    #     If true, tapping during a pause will stop it and immediately start the next text animation.
+    #     """
+    #     return self._get_attr("stop_pause_on_tap", def_value=False, data_type="bool")
 
-    @is_repeating_animation.setter
-    def is_repeating_animation(self, value):
-        """Sets whether the animation should repeat."""
-        self._set_attr("is_repeating_animation", value)
+    # @stop_pause_on_tap.setter
+    # def stop_pause_on_tap(self, value):
+    #     """
+    #     Sets whether tapping during a pause should stop the pause and start the next text animation.
+    #     If true, a tap during a pause will stop the pause and trigger the start of the next text animation.
+    #     """
+    #     self._set_attr("stop_pause_on_tap", value)
 
-    @property
-    def total_repeat_count(self):
-        """Gets the total number of times the animation should repeat."""
-        return self._get_attr("total_repeat_count", def_value=0, data_type="int")
+    # @property
+    # def is_repeating_animation(self):
+    #     """Gets whether the animation is set to repeat."""
+    #     return self._get_attr(
+    #         "is_repeating_animation", def_value=True, data_type="bool"
+    #     )
 
-    @total_repeat_count.setter
-    def total_repeat_count(self, value):
-        """Sets the number of times the animation should repeat when not set to repeat forever."""
-        self._set_attr("total_repeat_count", value)
+    # @is_repeating_animation.setter
+    # def is_repeating_animation(self, value):
+    #     """Sets whether the animation should repeat."""
+    #     self._set_attr("is_repeating_animation", value)
 
-    # on_tap
-    @property
-    def on_tap(self):
-        return self._get_event_handler("on_tap")
+    # @property
+    # def total_repeat_count(self):
+    #     """Gets the total number of times the animation should repeat."""
+    #     return self._get_attr("total_repeat_count", def_value=0, data_type="int")
 
-    @on_tap.setter
-    def on_tap(self, handler):
-        self._add_event_handler("on_tap", handler)
-        self._set_attr("onTap", True if handler is not None else None)
+    # @total_repeat_count.setter
+    # def total_repeat_count(self, value):
+    #     """Sets the number of times the animation should repeat when not set to repeat forever."""
+    #     self._set_attr("total_repeat_count", value)
 
-    # on_finished
-    @property
-    def on_finished(self):
-        """
-        Gets the event handler for the 'finished' event.
-        This event is triggered when the text animation sequence has completed.
-        """
-        return self._get_event_handler("on_finished")
+    # # on_tap
+    # @property
+    # def on_tap(self):
+    #     return self._get_event_handler("on_tap")
 
-    @on_finished.setter
-    def on_finished(self, handler):
-        """
-        Sets the event handler for the 'finished' event.
-        Registers a function to be called when the text animation sequence completes.
-        """
-        self._add_event_handler("on_finished", handler)
-        self._set_attr("onFinished", True if handler is not None else None)
+    # @on_tap.setter
+    # def on_tap(self, handler):
+    #     self._add_event_handler("on_tap", handler)
+    #     self._set_attr("onTap", True if handler is not None else None)
 
-    # on_next
-    @property
-    def on_next(self):
-        """
-        Gets the event handler for the 'next' event.
-        This event is triggered when moving to the next text in the sequence.
-        """
-        return self._get_event_handler("on_next")
+    # # on_finished
+    # @property
+    # def on_finished(self):
+    #     """
+    #     Gets the event handler for the 'finished' event.
+    #     This event is triggered when the text animation sequence has completed.
+    #     """
+    #     return self._get_event_handler("on_finished")
 
-    @on_next.setter
-    def on_next(self, handler):
-        """
-        Sets the event handler for the 'next' event.
-        Registers a function to be called when transitioning to the next text in the animation.
-        """
-        self._add_event_handler("on_next", handler)
-        self._set_attr("onNext", True if handler is not None else None)
+    # @on_finished.setter
+    # def on_finished(self, handler):
+    #     """
+    #     Sets the event handler for the 'finished' event.
+    #     Registers a function to be called when the text animation sequence completes.
+    #     """
+    #     self._add_event_handler("on_finished", handler)
+    #     self._set_attr("onFinished", True if handler is not None else None)
 
-    # on_next_before_pause
-    @property
-    def on_next_before_pause(self):
-        """
-        Gets the event handler for the 'next_before_pause' event.
-        This event is triggered just before a pause is initiated after a text has been displayed.
-        """
-        return self._get_event_handler("on_next_before_pause")
+    # # on_next
+    # @property
+    # def on_next(self):
+    #     """
+    #     Gets the event handler for the 'next' event.
+    #     This event is triggered when moving to the next text in the sequence.
+    #     """
+    #     return self._get_event_handler("on_next")
 
-    @on_next_before_pause.setter
-    def on_next_before_pause(self, handler):
-        """
-        Sets the event handler for the 'next_before_pause' event.
-        Registers a function to be called right before a pause is initiated in the animation cycle.
-        """
-        self._add_event_handler("on_next_before_pause", handler)
-        self._set_attr("onNextBeforePause", True if handler is not None else None)
+    # @on_next.setter
+    # def on_next(self, handler):
+    #     """
+    #     Sets the event handler for the 'next' event.
+    #     Registers a function to be called when transitioning to the next text in the animation.
+    #     """
+    #     self._add_event_handler("on_next", handler)
+    #     self._set_attr("onNext", True if handler is not None else None)
+
+    # # on_next_before_pause
+    # @property
+    # def on_next_before_pause(self):
+    #     """
+    #     Gets the event handler for the 'next_before_pause' event.
+    #     This event is triggered just before a pause is initiated after a text has been displayed.
+    #     """
+    #     return self._get_event_handler("on_next_before_pause")
+
+    # @on_next_before_pause.setter
+    # def on_next_before_pause(self, handler):
+    #     """
+    #     Sets the event handler for the 'next_before_pause' event.
+    #     Registers a function to be called right before a pause is initiated in the animation cycle.
+    #     """
+    #     self._add_event_handler("on_next_before_pause", handler)
+    #     self._set_attr("onNextBeforePause", True if handler is not None else None)
 
     # # animate
     # @property
