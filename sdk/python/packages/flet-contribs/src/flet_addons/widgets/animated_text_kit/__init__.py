@@ -1,1 +1,3 @@
 from .animated_text_kit import AnimatedText, AnimatedTexts, AnimatedTextKit
+from .typewriter_animated_text import TypewriterAnimatedText
+from .rotate_animated_text import RotateAnimatedText
