@@ -20,15 +20,19 @@ class AnimatedTextKitControl extends StatefulWidget {
   final Widget? nextChild;
   final FletControlBackend backend;
 
-  const AnimatedTextKitControl(
-      {super.key,
-      required this.parent,
-      required this.control,
-      required this.children,
-      required this.nextChild,
-      required this.parentDisabled,
-      required this.parentAdaptive,
-      required this.backend});
+  // final List<dynamic> animatedTextsConfig;
+
+  const AnimatedTextKitControl({
+    super.key,
+    required this.parent,
+    required this.control,
+    required this.children,
+    required this.nextChild,
+    required this.parentDisabled,
+    required this.parentAdaptive,
+    required this.backend,
+    // required this.animatedTextsConfig
+  });
 
   @override
   State<AnimatedTextKitControl> createState() => _AnimatedTextKitControlState();
@@ -91,6 +95,58 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         widget.control.id, _focusNode.hasFocus ? "focus" : "blur", "");
   }
 
+  List<AnimatedText> _createAnimatedTexts(String animatedTextsConfig) {
+    // Decode the JSON and ensure it's properly cast.
+    List<dynamic> configs;
+    try {
+      configs = json.decode(animatedTextsConfig) as List<dynamic>;
+    } catch (e) {
+      throw Exception('Error decoding JSON: $e');
+    }
+
+    return configs.map<AnimatedText>((dynamic config) {
+      // Ensure each config is a proper Map.
+      if (config is! Map) {
+        throw Exception(
+            'Each config must be a map. Found: ${config.runtimeType}');
+      }
+      Map<String, dynamic> mapConfig = config.cast<String, dynamic>();
+
+      // Extract and validate required fields.
+      String type = mapConfig['type'];
+      String text = mapConfig['text'];
+      int? durationMs = mapConfig['duration_ms'];
+
+      if (type == null || text == null || durationMs == null) {
+        throw Exception(
+            'Missing required config keys or invalid types: type, text, or duration_ms.');
+      }
+
+      switch (config['type']) {
+        case 'Typewriter':
+          return TypewriterAnimatedText(
+            config['text'],
+            speed: Duration(milliseconds: config['duration_ms']),
+          );
+        case 'Rotate':
+          return RotateAnimatedText(
+            config['text'],
+            duration: Duration(milliseconds: config['duration_ms']),
+            rotateOut: config['rotate_out'] ?? false,
+          );
+        case 'Fade':
+          return FadeAnimatedText(
+            config['text'],
+            duration: Duration(milliseconds: config['duration_ms']),
+            // fadeIn: config['fade_in'] ?? true,
+          );
+        // Add more cases as needed
+        default:
+          throw Exception('Unsupported animation type: ${config['type']}');
+      }
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint(
@@ -121,12 +177,12 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
 
       // var text = widget.control.attrString("text",
       //     "text appears to be blank,  so I will just say... Hello world!")!;
-      String text = widget.control.attrs["text"] ??
-          "text appears to be blank,  so I will just say... Hello world!";
-      if (_text != text) {
-        _text = text;
-        // _controller.text = text;
-      }
+      // String text = widget.control.attrs["text"] ??
+      //     "text appears to be blank,  so I will just say... Hello world!";
+      // if (_text != text) {
+      //   _text = text;
+      //   // _controller.text = text;
+      // }
 
       // var prefixControls =
       //     widget.children.where((c) => c.name == "prefix" && c.isVisible);
@@ -158,7 +214,7 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
             color: _focused ? focusedColor ?? color : color);
       }
       debugPrint("AnimatedTextKit style: ${textStyle} ");
-      debugPrint("AnimatedTextKit text: ${text} ");
+      // debugPrint("AnimatedTextKit text: ${text} ");
 
       // if (text == "") {
       //   return const ErrorControl(
@@ -199,20 +255,22 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         _lastFocusValue = focusValue;
         focusNode.requestFocus();
       }
+      String animatedTextsConfig = widget.control.attrString("animatedTexts")!;
+      debugPrint(
+          "AnimatedTextKit animatedTextsConfig: ${animatedTextsConfig} ");
+      var animatedTexts = _createAnimatedTexts(animatedTextsConfig);
+      debugPrint("AnimatedTextKit animatedTexts: ${animatedTexts} ");
       Widget animatedTextKit = AnimatedTextKit(
         // autofocus: autofocus,
         // enabled: !disabled,
-        animatedTexts: [
-          TypewriterAnimatedText(
-            text,
-            textStyle: textStyle,
-            // textStyle: const TextStyle(
-            //   fontSize: 32.0,
-            //   fontWeight: FontWeight.bold,
-            // ),
-            speed: Duration(milliseconds: speed),
-          ),
-        ],
+        animatedTexts: animatedTexts,
+        // animatedTexts: [
+        //   TypewriterAnimatedText(
+        //     text,
+        //     textStyle: textStyle,
+        //     speed: Duration(milliseconds: speed),
+        //   ),
+        // ],
         isRepeatingAnimation: isRepeatingAnimation,
         repeatForever: repeatForever,
         totalRepeatCount: totalRepeatCount,
