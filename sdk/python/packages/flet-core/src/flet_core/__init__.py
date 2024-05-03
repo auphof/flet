@@ -21,6 +21,7 @@ from flet_core.alignment import Alignment
 from flet_core.animated_switcher import AnimatedSwitcher, AnimatedSwitcherTransition
 from flet_core.animation import Animation, AnimationCurve
 
+# TODO: get community feedback on  this move to flet-contrib.flet_widgets
 # from flet_core.animated_text_kit import AnimatedTextKit, AnimatedText, AnimatedTexts
 from flet_core.app_bar import AppBar
 from flet_core.audio import Audio

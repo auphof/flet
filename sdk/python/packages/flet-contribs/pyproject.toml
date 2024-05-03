@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "flet-contribs"
 version = "0.1.0"
-description = "Flet 3rd party contributed library"
+description = "Flet 3rd party contributed library of widgets, tools, examples and docs"
 authors = ["Appveyor Systems Inc. <hello@flet.dev>"]
 license = "Apache-2.0"
 readme = "README.md"
 
 packages = [
-    { include = "flet_contribs", from = "src" },
+    { include = "flet_addons", from = "src" },
 ]
 
 [tool.poetry.urls]
