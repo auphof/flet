@@ -175,15 +175,6 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
 
       debugPrint("AnimatedTextKit attrString: ${widget.control} ");
 
-      // var text = widget.control.attrString("text",
-      //     "text appears to be blank,  so I will just say... Hello world!")!;
-      // String text = widget.control.attrs["text"] ??
-      //     "text appears to be blank,  so I will just say... Hello world!";
-      // if (_text != text) {
-      //   _text = text;
-      //   // _controller.text = text;
-      // }
-
       // var prefixControls =
       //     widget.children.where((c) => c.name == "prefix" && c.isVisible);
       // var suffixControls =
@@ -260,17 +251,14 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
           "AnimatedTextKit animatedTextsConfig: ${animatedTextsConfig} ");
       var animatedTexts = _createAnimatedTexts(animatedTextsConfig);
       debugPrint("AnimatedTextKit animatedTexts: ${animatedTexts} ");
+      bool onFinishedCallback = widget.control.attrBool("onFinished", false)!;
+      debugPrint(
+          "AnimatedTextKit ASSERT 3 ------------ assert(null == onFinished || !repeatForever), : onFinished: ${onFinishedCallback}, repeatForever: ${repeatForever}");
       Widget animatedTextKit = AnimatedTextKit(
         // autofocus: autofocus,
         // enabled: !disabled,
         animatedTexts: animatedTexts,
-        // animatedTexts: [
-        //   TypewriterAnimatedText(
-        //     text,
-        //     textStyle: textStyle,
-        //     speed: Duration(milliseconds: speed),
-        //   ),
-        // ],
+
         isRepeatingAnimation: isRepeatingAnimation,
         repeatForever: repeatForever,
         totalRepeatCount: totalRepeatCount,
@@ -281,10 +269,14 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
           debugPrint("AnimatedTextKit ${widget.control.id} onTap!");
           widget.backend.triggerControlEvent(widget.control.id, "on_tap");
         },
-        onFinished: () {
-          debugPrint("AnimatedTextKit ${widget.control.id} onFinished!");
-          widget.backend.triggerControlEvent(widget.control.id, "on_finished");
-        },
+        onFinished: onFinishedCallback
+            ? () {
+                debugPrint("AnimatedTextKit ${widget.control.id} onFinished!");
+                widget.backend
+                    .triggerControlEvent(widget.control.id, "on_finished");
+              }
+            : null,
+
         onNext: (int, bool) {
           debugPrint("AnimatedTextKit ${widget.control.id} onNext!");
           widget.backend.triggerControlEvent(widget.control.id, "on_next");
@@ -321,11 +313,6 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
                 context, animatedTextKit, widget.parent, widget.control);
           },
         );
-        // return withPageArgs((context, pageArgs) {
-        //   Widget? animatedTextKit;
-        //   return constrainedControl(
-        //       context, animatedTextKit, widget.parent, widget.control);
-        // });
       }
     });
   }
