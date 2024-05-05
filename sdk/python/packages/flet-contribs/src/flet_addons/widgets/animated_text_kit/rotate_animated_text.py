@@ -1,8 +1,10 @@
 from typing import Optional
 import flet as ft
 
+from .common import BaseAnimatedText
 
-class RotateAnimatedText:
+
+class RotateAnimatedText(BaseAnimatedText):
     extra_length_for_blinks = 8  # Similar to the static const in Dart
     type_name = "Rotate"
 
@@ -35,7 +37,7 @@ class RotateAnimatedText:
 
     def to_dict(self):
         return {
-            "text_type": self.type_name,
+            "type": self.type_name,
             "text": self.text,
             "duration_ms": self.duration,
             "rotate_out": self.rotate_out,

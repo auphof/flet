@@ -1,8 +1,9 @@
 from typing import Optional
 import flet as ft
+from .common import BaseAnimatedText
 
 
-class TypewriterAnimatedText:
+class TypewriterAnimatedText(BaseAnimatedText):
     extra_length_for_blinks = 8  # Similar to the static const in Dart
     type_name = "Typewriter"
 
@@ -38,14 +39,17 @@ class TypewriterAnimatedText:
         self.speed = speed
         # self.curve = curve
         # self.cursor = cursor
-        self.duration = self.speed * (len(text) + self.extra_length_for_blinks)
+        self.duration = self.speed * (len(self.text) + self.extra_length_for_blinks)
 
         # Placeholder for animation controller logic
         # self.typewriter_text = None
 
     def to_dict(self):
         return {
-            "text_type": self.type_name,
+            "type": self.type_name,
             "text": self.text,
-            "duration_ms": self.duration,
+            "duration_ms": self.speed,
         }
+
+    # def serialize(self):
+    #     return self.to_dict()

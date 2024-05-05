@@ -245,9 +245,9 @@ class AnimatedTextKit(ConstrainedControl):
         text_style: Optional[TextStyle] = None,
         animate: Optional[bool] = None,
         # TODO: check what can be removed
-        background_loading: Optional[bool] = None,
-        filter_quality: Optional[FilterQuality] = None,
-        fit: Optional[ImageFit] = None,
+        # background_loading: Optional[bool] = None,
+        # filter_quality: Optional[FilterQuality] = None,
+        # fit: Optional[ImageFit] = None,
         on_error=None,
         on_tap=None,
         on_finished=None,
@@ -353,9 +353,10 @@ class AnimatedTextKit(ConstrainedControl):
         self.total_repeat_count = total_repeat_count
         self.reverse = reverse
         self.animate = animate
-        self.filter_quality = filter_quality
-        self.fit = fit
-        self.background_loading = background_loading
+        # TODO: can these be removed
+        # self.filter_quality = filter_quality
+        # self.fit = fit
+        # self.background_loading = background_loading
         self.on_error = on_error
         self.on_tap = on_tap
         self.on_finished = on_finished
