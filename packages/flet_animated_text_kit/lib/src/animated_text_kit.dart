@@ -95,9 +95,11 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         widget.control.id, _focusNode.hasFocus ? "focus" : "blur", "");
   }
 
-  List<AnimatedText> _createAnimatedTexts(String animatedTextsConfig) {
+  List<AnimatedText> _createAnimatedTexts(
+      String animatedTextsConfig, TextStyle? defaultTextStyle) {
     // Decode the JSON and ensure it's properly cast.
     List<dynamic> configs;
+
     try {
       configs = json.decode(animatedTextsConfig) as List<dynamic>;
     } catch (e) {
@@ -126,20 +128,39 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         case 'Typewriter':
           return TypewriterAnimatedText(
             config['text'],
+            // TODO TD: the following test for Null should not be required , it should inherit if not set
+            // see child: DefaultTextStyle( in https://github.com/aagarwal1012/Animated-Text-Kit/tree/master?tab=readme-ov-file#typewriter
+            textStyle: config['textStyle'] ?? defaultTextStyle,
             speed: Duration(milliseconds: config['duration_ms']),
           );
         case 'Rotate':
           return RotateAnimatedText(
             config['text'],
+            // TODO TD: the following test for Null should not be required , it should inherit if not set
+            // see child: DefaultTextStyle( in https://github.com/aagarwal1012/Animated-Text-Kit/tree/master?tab=readme-ov-file#typewriter
+            textStyle: config['textStyle'] ?? defaultTextStyle,
             duration: Duration(milliseconds: config['duration_ms']),
             rotateOut: config['rotate_out'] ?? false,
           );
         case 'Fade':
           return FadeAnimatedText(
             config['text'],
+            // TODO TD: the following test for Null should not be required , it should inherit if not set
+            // see child: DefaultTextStyle( in https://github.com/aagarwal1012/Animated-Text-Kit/tree/master?tab=readme-ov-file#typewriter
+            textStyle: config['textStyle'] ?? defaultTextStyle,
             duration: Duration(milliseconds: config['duration_ms']),
-            // fadeIn: config['fade_in'] ?? true,
+            fadeInEnd: config['fade_in_end'] ?? 0.5,
+            fadeOutBegin: config['fade_out_begin'] ?? 0.8,
           );
+        case 'Scale':
+          return ScaleAnimatedText(config['text'],
+              // TODO TD: the following test for Null should not be required , it should inherit if not set
+              // see child: DefaultTextStyle( in https://github.com/aagarwal1012/Animated-Text-Kit/tree/master?tab=readme-ov-file#typewriter
+              textStyle: config['textStyle'] ?? defaultTextStyle,
+              duration: Duration(milliseconds: config['duration_ms']),
+              scalingFactor: config['scalingFactor'] ?? 0.5
+              // fadeIn: config['fade_in'] ?? true,
+              );
         // Add more cases as needed
         default:
           throw Exception('Unsupported animation type: ${config['type']}');
@@ -249,7 +270,7 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
       String animatedTextsConfig = widget.control.attrString("animatedTexts")!;
       debugPrint(
           "AnimatedTextKit animatedTextsConfig: ${animatedTextsConfig} ");
-      var animatedTexts = _createAnimatedTexts(animatedTextsConfig);
+      var animatedTexts = _createAnimatedTexts(animatedTextsConfig, textStyle);
       debugPrint("AnimatedTextKit animatedTexts: ${animatedTexts} ");
       bool onFinishedCallback = widget.control.attrBool("onFinished", false)!;
       debugPrint(
