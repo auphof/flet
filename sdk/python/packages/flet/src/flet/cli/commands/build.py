@@ -268,6 +268,13 @@ class Command(BaseCommand):
             type=str,
             help="the branch, tag or commit ID to checkout after cloning the repository with Flutter bootstrap template",
         )
+        parser.add_argument(
+            "--debug-keep-temp",
+            dest="debug_keep_temp",
+            action="store_true",
+            default=False,
+            help="enables temporary directories to be kept for debugging purposes (web only)",
+        )
 
     def handle(self, options: argparse.Namespace) -> None:
         from cookiecutter.main import cookiecutter
@@ -471,9 +478,9 @@ class Command(BaseCommand):
                     "flutter_launcher_icons/adaptive_icon_foreground",
                     [android_icon, default_icon],
                 )
-                pubspec["flutter_launcher_icons"][
-                    "adaptive_icon_background"
-                ] = options.android_adaptive_icon_background
+                pubspec["flutter_launcher_icons"]["adaptive_icon_background"] = (
+                    options.android_adaptive_icon_background
+                )
             fallback_image(
                 "flutter_launcher_icons/web/image_path", [web_icon, default_icon]
             )
@@ -572,16 +579,16 @@ class Command(BaseCommand):
             # splash colors
             if options.splash_color:
                 pubspec["flutter_native_splash"]["color"] = options.splash_color
-                pubspec["flutter_native_splash"]["android_12"][
-                    "color"
-                ] = options.splash_color
+                pubspec["flutter_native_splash"]["android_12"]["color"] = (
+                    options.splash_color
+                )
             if options.splash_dark_color:
-                pubspec["flutter_native_splash"][
-                    "color_dark"
-                ] = options.splash_dark_color
-                pubspec["flutter_native_splash"]["android_12"][
-                    "color_dark"
-                ] = options.splash_dark_color
+                pubspec["flutter_native_splash"]["color_dark"] = (
+                    options.splash_dark_color
+                )
+                pubspec["flutter_native_splash"]["android_12"]["color_dark"] = (
+                    options.splash_dark_color
+                )
 
         # enable/disable splashes
         pubspec["flutter_native_splash"]["web"] = not options.no_web_splash
@@ -685,7 +692,9 @@ class Command(BaseCommand):
                 print(package_result.stdout)
             if package_result.stderr:
                 print(package_result.stderr)
-            self.cleanup(package_result.returncode)
+            self.cleanup(
+                package_result.returncode, debug_keep_temp=options.debug_keep_temp
+            )
 
         # make sure app/app.zip exists
         app_zip_path = self.flutter_dir.joinpath("app", "app.zip")
@@ -840,12 +849,22 @@ class Command(BaseCommand):
         return r
 
     def cleanup(
-        self, exit_code: int, message: Optional[str] = None, check_flutter_version=False
+        self,
+        exit_code: int,
+        message: Optional[str] = None,
+        check_flutter_version=False,
+        debug_keep_temp=False,
     ):
         if self.flutter_dir and os.path.exists(self.flutter_dir):
-            if self.verbose > 0:
-                print(f"Deleting Flutter bootstrap directory {self.flutter_dir}")
-            shutil.rmtree(str(self.flutter_dir), ignore_errors=True, onerror=None)
+            if debug_keep_temp:
+                if self.verbose > 0:
+                    print(
+                        f"Retaining Flutter bootstrap directory for debugging purposes {self.flutter_dir}"
+                    )
+            else:
+                if self.verbose > 0:
+                    print(f"Deleting Flutter bootstrap directory {self.flutter_dir}")
+                shutil.rmtree(str(self.flutter_dir), ignore_errors=True, onerror=None)
         if exit_code == 0:
             msg = message if message else "Success!"
             print(f"[spring_green3]{msg}[/spring_green3]")
