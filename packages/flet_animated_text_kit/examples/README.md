@@ -7,7 +7,7 @@ Terminal 1 - flet Animated Text Kit example1
 # from flet dir
 export FLET_VIEW_PATH=$HOME/dev/SANDBOX/SANDBOX-flet/modules/flet/client/build/linux/x64/debug/bundle
 cd flet/packages/flet_animated_text_kit/examples/
-FLET_FORCE_WEB_SERVER=true flet run example1.py  -p 8550
+FLET_FORCE_WEB_SERVER=true flet run example1/main.py  -p 8550
 ```
 Terminal 2 - flet client (backend)
 ```bash
@@ -25,8 +25,19 @@ flutter build linux  -v
 
 export FLET_VIEW_PATH=$HOME/dev/SANDBOX/SANDBOX-flet/modules/flet/client/build/linux/x64/release/bundle
 
-# Step 2 Test
+# Step 2 Test - linux
 pushd flet/packages/flet_animated_text_kit/examples/
-flet run  example1.py
+flet run  example1/main.py
 popd
+
+# Step 3 Build web
+flutter build web  -v 
+
+
+# Step 4 Test - WEB
+pushd flet/packages/flet_animated_text_kit/examples/
+flet run -w  example1/main.py
+popd
+
+example1/main
 ```

@@ -1,5 +1,9 @@
 import flet as ft
+
+print("TESTING TESTING 123 --------------------------------------------------------")
 from flet_addons.widgets import animated_text_kit as ftatk
+
+# from flet_core import animated_text_kit as ftatk
 from datetime import datetime
 
 
@@ -35,12 +39,12 @@ def main(page: ft.Page):
     # Fonts to support  the examples, saved in assests folder
     page.fonts = {
         # UNCOMMENT if using local assets
-        # "Agne": "fonts/Agne.otf",
-        # "Horizon": "fonts/Horizon.otf",
-        # "Canterbury": "fonts/Canterbury.ttf",
-        "Agne": "https://github.com/aagarwal1012/Animated-Text-Kit/raw/master/example/assets/Agne.otf",
-        "Horizon": "https://github.com/aagarwal1012/Animated-Text-Kit/raw/master/example/assets/Horizon.otf",
-        "Canterbury": "https://github.com/aagarwal1012/Animated-Text-Kit/raw/master/example/assets/Canterbury.ttf",
+        "Agne": "fonts/Agne.otf",
+        "Horizon": "fonts/Horizon.otf",
+        "Canterbury": "fonts/Canterbury.ttf",
+        # "Agne": "https://github.com/aagarwal1012/Animated-Text-Kit/raw/master/example/assets/Agne.otf",
+        # "Horizon": "https://github.com/aagarwal1012/Animated-Text-Kit/raw/master/example/assets/Horizon.otf",
+        # "Canterbury": "https://github.com/aagarwal1012/Animated-Text-Kit/raw/master/example/assets/Canterbury.ttf",
     }
 
     # Create a ListView to hold event messages
