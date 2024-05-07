@@ -24,6 +24,8 @@ t["tool"]["poetry"]["version"] = ver
 deps = t["tool"]["poetry"]["dependencies"]
 if deps.get("flet-core"):
     deps["flet-core"] = ver
+if deps.get("flet-contribs"):
+    deps["flet-contribs"] = ver
 if deps.get("flet-runtime"):
     deps["flet-runtime"] = ver
 if deps.get("flet"):

@@ -7,4 +7,5 @@ poetry build
 cd ..\..
 
 copy packages\flet-core\dist\*.whl ..\..\client\build\web\python
+copy packages\flet-contribs\dist\*.whl ..\..\client\build\web\python
 copy packages\flet-pyodide\dist\*.whl ..\..\client\build\web\python
