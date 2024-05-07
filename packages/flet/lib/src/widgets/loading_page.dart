@@ -4,7 +4,8 @@ class LoadingPage extends StatelessWidget {
   final bool isLoading;
   final String message;
 
-  const LoadingPage({super.key, required this.isLoading, required this.message});
+  const LoadingPage(
+      {super.key, required this.isLoading, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +33,11 @@ class LoadingPage extends StatelessWidget {
         ]);
       }
       child = Column(
+        // child = SingleChildScrollView(
+        //   child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: children,
+        // ),
       );
     } else if (message != "") {
       child = Container(
