@@ -158,7 +158,7 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
               // see child: DefaultTextStyle( in https://github.com/aagarwal1012/Animated-Text-Kit/tree/master?tab=readme-ov-file#typewriter
               textStyle: config['textStyle'] ?? defaultTextStyle,
               duration: Duration(milliseconds: config['duration_ms']),
-              scalingFactor: config['scalingFactor'] ?? 0.5
+              scalingFactor: config['scaling_factor'] ?? 0.5
               // fadeIn: config['fade_in'] ?? true,
               );
         // Add more cases as needed

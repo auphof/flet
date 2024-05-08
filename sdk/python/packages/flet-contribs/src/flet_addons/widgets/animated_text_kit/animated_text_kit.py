@@ -232,7 +232,7 @@ class AnimatedTextKit(ConstrainedControl):
     def __init__(
         self,
         text: str = None,
-        animated_texts: List[AnimatedText] = [],
+        animated_texts: AnimatedTexts = None,
         speed: OptionalNumber = None,
         pause: OptionalNumber = None,
         repeat_forever: Optional[bool] = None,
@@ -338,7 +338,6 @@ class AnimatedTextKit(ConstrainedControl):
             rtl=rtl,
         )
         # Control properties
-        # self.text = text
         self.animated_texts = animated_texts
         self.text_size = text_size
         self.text_style = text_style
@@ -366,18 +365,18 @@ class AnimatedTextKit(ConstrainedControl):
     def before_update(self):
         super().before_update()
         self._set_attr_json("textStyle", self.__text_style)
-        self._set_attr_json("animatedTexts", self.__animated_texts)
+        self._set_attr_json("animatedTexts", self.__animated_texts.serialize_all())
 
     def _get_control_name(self):
         return "animated_text_kit"
 
     # animated_texts
     @property
-    def animated_texts(self) -> List[AnimatedText]:
+    def animated_texts(self) -> AnimatedTexts:
         return self.__animated_texts
 
     @animated_texts.setter
-    def animated_texts(self, value: List[AnimatedText]):
+    def animated_texts(self, value: AnimatedTexts):
         self.__animated_texts = value
 
     # text_style
