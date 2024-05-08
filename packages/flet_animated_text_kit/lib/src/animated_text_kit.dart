@@ -212,20 +212,17 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
       var theme = Theme.of(context);
 
       var textStyleTest = widget.control.attrString("textStyle");
-      debugPrint("AnimatedTextKit textStyleTest: ${textStyleTest} ");
+      // debugPrint("AnimatedTextKit textStyleTest: ${textStyleTest} ");
       TextStyle? textStyle = parseTextStyle(theme, widget.control, "textStyle");
-      // TextStyle? textStyle = TextStyle(
-      //   fontSize: 32.0,
-      //   fontWeight: FontWeight.bold,
-      // );
-      debugPrint("AnimatedTextKit textStyle: ${textStyle} ");
+
+      // debugPrint("AnimatedTextKit textStyle: ${textStyle} ");
 
       if (textSize != null || color != null || focusedColor != null) {
         textStyle = (textStyle ?? const TextStyle()).copyWith(
             fontSize: textSize,
             color: _focused ? focusedColor ?? color : color);
       }
-      debugPrint("AnimatedTextKit style: ${textStyle} ");
+      // debugPrint("AnimatedTextKit style: ${textStyle} ");
       // debugPrint("AnimatedTextKit text: ${text} ");
 
       // if (text == "") {
@@ -268,13 +265,13 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         focusNode.requestFocus();
       }
       String animatedTextsConfig = widget.control.attrString("animatedTexts")!;
-      debugPrint(
-          "AnimatedTextKit animatedTextsConfig: ${animatedTextsConfig} ");
+      // debugPrint(
+      //     "AnimatedTextKit animatedTextsConfig: ${animatedTextsConfig} ");
       var animatedTexts = _createAnimatedTexts(animatedTextsConfig, textStyle);
-      debugPrint("AnimatedTextKit animatedTexts: ${animatedTexts} ");
+      // debugPrint("AnimatedTextKit animatedTexts: ${animatedTexts} ");
       bool onFinishedCallback = widget.control.attrBool("onFinished", false)!;
-      debugPrint(
-          "AnimatedTextKit ASSERT 3 ------------ assert(null == onFinished || !repeatForever), : onFinished: ${onFinishedCallback}, repeatForever: ${repeatForever}");
+      // debugPrint(
+      //     "AnimatedTextKit ASSERT 3 ------------ assert(null == onFinished || !repeatForever), : onFinished: ${onFinishedCallback}, repeatForever: ${repeatForever}");
       Widget animatedTextKit = AnimatedTextKit(
         // autofocus: autofocus,
         // enabled: !disabled,
@@ -287,23 +284,23 @@ class _AnimatedTextKitControlState extends State<AnimatedTextKitControl>
         displayFullTextOnTap: displayFullTextOnTap,
         stopPauseOnTap: stopPauseOnTap,
         onTap: () {
-          debugPrint("AnimatedTextKit ${widget.control.id} onTap!");
+          // debugPrint("AnimatedTextKit ${widget.control.id} onTap!");
           widget.backend.triggerControlEvent(widget.control.id, "on_tap");
         },
         onFinished: onFinishedCallback
             ? () {
-                debugPrint("AnimatedTextKit ${widget.control.id} onFinished!");
+                // debugPrint("AnimatedTextKit ${widget.control.id} onFinished!");
                 widget.backend
                     .triggerControlEvent(widget.control.id, "on_finished");
               }
             : null,
 
         onNext: (int, bool) {
-          debugPrint("AnimatedTextKit ${widget.control.id} onNext!");
+          // debugPrint("AnimatedTextKit ${widget.control.id} onNext!");
           widget.backend.triggerControlEvent(widget.control.id, "on_next");
         },
         onNextBeforePause: (int, bool) {
-          debugPrint("AnimatedTextKit ${widget.control.id} onNextBeforePause!");
+          // debugPrint("AnimatedTextKit ${widget.control.id} onNextBeforePause!");
           widget.backend
               .triggerControlEvent(widget.control.id, "on_next_before_pause");
         },
